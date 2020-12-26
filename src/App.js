@@ -5,31 +5,20 @@ import siteData from "./siteData"
 import antonio from "./antonio.png"
 
 function App() {
-  const [videoIds, setVideoIds] = useState(
-    []
-    //   [
-    //   "TBWwqoQrSL8",
-    //   "ARJAPAPMvNU",
-    //   "7bB9ntvdkpE",
-    //   "r01Qobesj1Y",
-    //   "6sEh-IcndNI",
-    // ]
-  )
+  const [videoIds, setVideoIds] = useState([])
 
   useEffect(() => {
     const fetchVideoIds = async () => {
-      const videoIds = await fetch(
+      const ids = await fetch(
         `https://www.googleapis.com/youtube/v3/search?key=${process.env.REACT_APP_YT_KEY}&channelId=UCCmfNcoIXkBDPh5hxonV8_A&part=snippet,id&order=date&maxResults=50`
       )
         .then((res) => res.json())
-        .then((something) => console.log(something))
         .then((data) =>
-          data.items ? data.items.map((item) => item.id.videoId) : []
+          data.items.map((item) => item.id.videoId).filter(Boolean)
         )
+        .catch(() => [])
 
-      console.log(videoIds)
-
-      setVideoIds(videoIds)
+      setVideoIds(ids)
     }
     fetchVideoIds()
   }, [])
@@ -48,7 +37,5 @@ function App() {
     </div>
   )
 }
-
-// AIzaSyAzj14iu7S_xdCC_5Fz27Ndn7Hr_smKbjc
 
 export default App
